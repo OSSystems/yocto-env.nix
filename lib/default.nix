@@ -156,6 +156,7 @@
         targetPkgs =
           _: with pkgs; [
             bitbake-setup
+            kas
             attr
             bc
             binutils
