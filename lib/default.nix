@@ -1,4 +1,4 @@
-_:
+{ flake, ... }:
 
 {
   mkYoctoEnv =
@@ -6,6 +6,8 @@ _:
 
     let
       inherit (pkgs) lib;
+
+      bitbake-setup = flake.packages.${pkgs.stdenv.hostPlatform.system}.bitbake-setup;
 
       histFile = "~/.history-yocto-env";
 
@@ -153,6 +155,7 @@ _:
         name = "yocto-env";
         targetPkgs =
           _: with pkgs; [
+            bitbake-setup
             attr
             bc
             binutils
