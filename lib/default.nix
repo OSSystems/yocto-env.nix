@@ -13,6 +13,19 @@
         pkgs.kas
       ];
 
+      # python3 plus the modules the Yocto build host requires
+      # (system-requirements.html: python3-{git,jinja2,pexpect,pip,subunit,websockets}).
+      pythonEnv = pkgs.python3.withPackages (
+        ps: with ps; [
+          gitpython
+          jinja2
+          pexpect
+          pip
+          subunit
+          websockets
+        ]
+      );
+
       histFile = "~/.history-yocto-env";
 
       ccSalt = pkgs.stdenv.cc.suffixSalt;
@@ -161,6 +174,7 @@
           _:
           extraTools
           ++ (with pkgs; [
+            acl
             attr
             bc
             binutils
@@ -176,6 +190,7 @@
             gnumake
             gnupg
             hostname
+            iputils
             kconfig-frontends
             libxcrypt
             lz4
@@ -185,9 +200,10 @@
             patch
             perl
             pigz
-            python3
+            pythonEnv
             rpcsvc-proto
             socat
+            texinfo
             unzip
             util-linux
             wget
