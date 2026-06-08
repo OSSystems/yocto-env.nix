@@ -81,3 +81,15 @@ curl -sSL \
 
 If the table drifts, update this file and `flake.nix`'s `nixpkgs`
 pin, then `nix fmt` and `nix flake check`.
+
+## On a nixpkgs roll: re-check the host dependencies
+
+The devshell relies on `buildFHSEnvBubblewrap`'s base layer for some of
+the Yocto [build-host requirements][sysreq] (gawk, tar, gzip, bzip2, xz,
+coreutils, diffutils, findutils, sed, grep, glibc + locales); `lib/`
+only adds what that base omits (acl, iputils, texinfo, the python3
+modules, etc.). That base list is upstream's `baseTargetPaths` and can
+change between pins, so when rolling `nixpkgs` forward, re-verify the
+shell still covers the [Required Packages for the Build Host][sysreq].
+
+[sysreq]: https://docs.yoctoproject.org/ref-manual/system-requirements.html
