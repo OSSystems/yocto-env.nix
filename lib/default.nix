@@ -7,7 +7,11 @@
     let
       inherit (pkgs) lib;
 
-      bitbake-setup = flake.packages.${pkgs.stdenv.hostPlatform.system}.bitbake-setup;
+      # Extra tools layered on top of the base host toolchain.
+      extraTools = [
+        flake.packages.${pkgs.stdenv.hostPlatform.system}.bitbake-setup
+        pkgs.kas
+      ];
 
       histFile = "~/.history-yocto-env";
 
@@ -154,9 +158,9 @@
       fhs = pkgs.buildFHSEnvBubblewrap {
         name = "yocto-env";
         targetPkgs =
-          _: with pkgs; [
-            bitbake-setup
-            kas
+          _:
+          extraTools
+          ++ (with pkgs; [
             attr
             bc
             binutils
@@ -190,7 +194,7 @@
             which
             zlib
             zstd
-          ];
+          ]);
         multiPkgs = null;
         extraOutputsToInstall = [ "dev" ];
 
