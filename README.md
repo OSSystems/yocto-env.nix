@@ -81,6 +81,9 @@ with whichever one your project uses:
   and drives bitbake: `kas build path/to/project.yml` (or `kas shell` to
   drop into a configured build environment).
 
+`oelint-adv`, an advanced bitbake-recipe linter, is also on `PATH` for
+checking recipe style and common mistakes: `oelint-adv path/to/recipe.bb`.
+
 ## Repository layout
 
 - `flake.nix` — minimal entry point; uses [phaer/red-tape](https://github.com/phaer/red-tape).

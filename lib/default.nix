@@ -11,6 +11,7 @@
       extraTools = [
         flake.packages.${pkgs.stdenv.hostPlatform.system}.bitbake-setup
         pkgs.kas
+        pkgs.oelint-adv
       ];
 
       # python3 plus the modules the Yocto build host requires
