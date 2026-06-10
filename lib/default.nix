@@ -242,6 +242,12 @@
           # fails its host-tool sanity check. Provide the same symlink.
           ln -s lz4 $out/usr/bin/lz4c
 
+          # nixpkgs' gcc wrapper omits the LTO shims (gcc-ar/gcc-nm/gcc-ranlib)
+          # that LTO-enabled recipes need; take them from the unwrapped gcc.
+          for t in gcc-ar gcc-nm gcc-ranlib; do
+            ln -s ${pkgs.stdenv.cc.cc}/bin/$t $out/usr/bin/$t
+          done
+
           # Suppress the FHS env's `/etc/X -> /.host-etc/X` symlinks by
           # giving its rootfs an entry at /etc/X — its etc-walk then
           # --ro-binds these placeholders and skips the symlink branch.

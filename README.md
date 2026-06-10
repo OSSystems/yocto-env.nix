@@ -49,9 +49,11 @@ nix develop github:OSSystems/yocto-env.nix/<tag>
 
 The shell is an FHS bubblewrap environment
 (`buildFHSEnvBubblewrap`) preconfigured with the host tooling
-`bitbake` expects: `gcc`, `gdb`, `git`, `git-lfs`, `gnumake`, `chrpath`,
-`cpio`, `diffstat`, `python3`, `rpcsvc-proto`, `util-linux`, plus the
-usual compression/archive utilities and a Yocto-aware set of fetcher and
+`bitbake` expects: `gcc` (including the `gcc-ar`/`gcc-nm`/`gcc-ranlib`
+LTO wrappers that LTO-enabled recipes such as `u-boot-tools-native`
+require), `gdb`, `git`, `git-lfs`, `gnumake`, `chrpath`, `cpio`,
+`diffstat`, `python3`, `rpcsvc-proto`, `util-linux`, plus the usual
+compression/archive utilities and a Yocto-aware set of fetcher and
 testimage helpers.
 
 The shell also wires the Nix toolchain into bitbake's hash-based
