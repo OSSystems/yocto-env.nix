@@ -10,6 +10,7 @@
       # Extra tools layered on top of the base host toolchain.
       extraTools = [
         flake.packages.${pkgs.stdenv.hostPlatform.system}.bitbake-setup
+        pkgs.google-cloud-sdk
         pkgs.kas
         pkgs.oelint-adv
       ];
@@ -24,6 +25,12 @@
           pip
           subunit
           websockets
+
+          # BitBake's `gs://` GCP fetcher (bb/fetch2/gcp.py) imports
+          # `google.cloud.storage` and `google.api_core.exceptions`; the
+          # google-cloud-sdk in extraTools provides gsutil/gcloud for the
+          # application-default credentials it authenticates with.
+          google-cloud-storage
         ]
       );
 
