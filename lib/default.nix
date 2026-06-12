@@ -222,12 +222,25 @@
         multiPkgs = null;
         extraOutputsToInstall = [ "dev" ];
 
-        # Overlay writable copies (see `basePasswd`).
-        extraBwrapArgs = lib.concatMap (name: [
-          "--bind"
-          "\${YOCTO_ENV_ETC_RW}/${name}"
-          "/etc/${name}"
-        ]) etcRwNames;
+        # Overlay writable copies (see `basePasswd`), then expose the host's
+        # msmtp config. `git send-email` with no `sendemail.smtp*` config
+        # defaults to the first `sendmail` on PATH; on NixOS that is a msmtp
+        # wrapper (`/run/wrappers/bin/sendmail`), which reads `/etc/msmtprc`.
+        # The FHS `/etc` shadows the host's, so without this msmtp fails with
+        # "no configuration file available". `/.host-etc` is the host `/etc`
+        # the FHS bubblewrap binds in; a dangling link (host without msmtp) is
+        # harmless — msmtp just falls back to its other config locations.
+        extraBwrapArgs =
+          (lib.concatMap (name: [
+            "--bind"
+            "\${YOCTO_ENV_ETC_RW}/${name}"
+            "/etc/${name}"
+          ]) etcRwNames)
+          ++ [
+            "--symlink"
+            "/.host-etc/msmtprc"
+            "/etc/msmtprc"
+          ];
 
         # `extraInstallCommands` only mutates the bwrap wrapper's $out,
         # which is *not* bound onto /usr inside the bubblewrap (nixpkgs'
