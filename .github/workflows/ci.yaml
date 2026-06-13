@@ -22,15 +22,7 @@ jobs:
   nix-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      - uses: nixbuild/nix-quick-install-action@v34
-      - name: Restore and cache Nix store
-        uses: nix-community/cache-nix-action@v7
+      - uses: ossystems/nix-actions@v1
         with:
-          primary-key: nix-${{ runner.os }}-${{ hashFiles('flake.*') }}
-          restore-prefixes-first-match: nix-${{ runner.os }}-
-      - name: Run flake checks
-        # The devshell-default check is rewritten in flake.nix to use the
-        # shell's inputDerivation (FHS envs refuse to build directly), so
-        # one step covers both eval and the shell's input closure.
-        run: nix flake check -L
+          install-nix: true
+          flake-check-args: -L
