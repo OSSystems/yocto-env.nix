@@ -13,22 +13,17 @@ jobs:
   oelint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
-      # A non-GITHUB_TOKEN identity so the PR triggers ci.yaml.
-      - name: Generate a token
-        id: app-token
-        uses: actions/create-github-app-token@v2
+      - uses: ossystems/nix-actions@v1
+        id: nix
         with:
+          install-nix: true
+          token-owner: OSSystems
           app-id: ${{ vars.UPDATE_PACKAGES_APP_ID }}
-          private-key: ${{ secrets.UPDATE_PACKAGES_APP_PRIVATE_KEY }}
-      - uses: nixbuild/nix-quick-install-action@v34
-      - name: Restore and cache Nix store
-        uses: nix-community/cache-nix-action@v7
-        with:
-          primary-key: nix-${{ runner.os }}-${{ hashFiles('flake.*') }}
-          restore-prefixes-first-match: nix-${{ runner.os }}-
+          app-private-key: ${{ secrets.UPDATE_PACKAGES_APP_PRIVATE_KEY }}
+          flake-check: false
+          build-hosts: false
+          build-devshells: false
       - name: Update oelint-parser and oelint-adv
-        # Parser first: oelint-adv builds against the in-tree parser.
         run: |
           nix run nixpkgs#nix-update -- --flake --version=stable oelint-parser
           nix run nixpkgs#nix-update -- --flake --version=stable oelint-adv
@@ -37,7 +32,7 @@ jobs:
       - name: Open pull request
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ steps.app-token.outputs.token }}
+          token: ${{ steps.nix.outputs.token }}
           branch: update/oelint
           delete-branch: true
           title: "oelint: update oelint-adv and oelint-parser"
