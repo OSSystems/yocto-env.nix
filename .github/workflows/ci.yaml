@@ -26,3 +26,4 @@ jobs:
         with:
           install-nix: true
           flake-check-args: -L
+          build-devshells: false
