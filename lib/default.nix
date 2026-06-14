@@ -12,7 +12,7 @@
         flake.packages.${pkgs.stdenv.hostPlatform.system}.bitbake-setup
         pkgs.google-cloud-sdk
         pkgs.kas
-        pkgs.oelint-adv
+        flake.packages.${pkgs.stdenv.hostPlatform.system}.oelint-adv
       ];
 
       # python3 plus the modules the Yocto build host requires
