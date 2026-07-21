@@ -8,14 +8,14 @@ let
 in
 ps.buildPythonPackage (finalAttrs: {
   pname = "oelint-parser";
-  version = "8.12.0";
+  version = "8.12.1";
   pyproject = true;
 
   src = pkgs.fetchFromGitHub {
     owner = "priv-kweihmann";
     repo = "oelint-parser";
     tag = finalAttrs.version;
-    hash = "sha256-XggfoeJSDl75AV9zjIayvDAiXZtyptCupNYuLCDvYS0=";
+    hash = "sha256-UY8KqItX8kj3eS3peP8okBR8i81MisMSffbhSPaqBM0=";
   };
 
   # Upstream pins `regex == <exact>`; relax it onto whatever nixpkgs ships.
