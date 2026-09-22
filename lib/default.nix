@@ -7,7 +7,13 @@
     let
       inherit (pkgs) lib;
 
-      selfPkgs = flake.packages.${pkgs.stdenv.hostPlatform.system};
+      system = pkgs.stdenv.hostPlatform.system;
+
+      selfPkgs = flake.packages.${system};
+
+      # Stable-branch nixpkgs used only for the host Python (see the
+      # `nixpkgs-python` input in flake.nix for the rationale).
+      pkgsPython = flake.inputs.nixpkgs-python.legacyPackages.${system};
 
       # Extra tools layered on top of the base host toolchain.
       extraTools = [
@@ -20,7 +26,12 @@
 
       # python3 plus the modules the Yocto build host requires
       # (system-requirements.html: python3-{git,jinja2,pexpect,pip,subunit,websockets}).
-      pythonEnv = pkgs.python3.withPackages (
+      #
+      # python311, not the default python3 (3.13): it is the newest CPython
+      # still shipping stdlib `distutils`, which kirkstone's sanity check
+      # imports (removed in 3.12, PEP 632). Clears the >=3.9 host minimum of
+      # scarthgap onwards, so one Python serves every supported release.
+      pythonEnv = pkgsPython.python311.withPackages (
         ps: with ps; [
           gitpython
           jinja2
