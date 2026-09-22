@@ -11,6 +11,16 @@
     # libc. See doc/uninative-glibc-caps.md.
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
+    # Host Python for the build shell. Kept on a stable release branch,
+    # separate from the unstable `nixpkgs` pin above, because unstable's
+    # python311 package set currently fails to evaluate (gitpython and
+    # google-cloud-storage pull sphinxHook -> sphinx 9.1.0, which nixpkgs
+    # marks unsupported on 3.11). python311 is required for kirkstone,
+    # whose sanity check imports stdlib `distutils` (gone in 3.12+). The
+    # Python interpreter's glibc is unrelated to the uninative caps issue
+    # that dictates the unstable pin, so mixing is safe here.
+    nixpkgs-python.url = "github:NixOS/nixpkgs/nixos-25.05";
+
     red-tape.url = "github:phaer/red-tape";
     red-tape.inputs.nixpkgs.follows = "nixpkgs";
 
