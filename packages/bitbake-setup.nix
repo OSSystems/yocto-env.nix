@@ -1,4 +1,4 @@
-{ pkgs, lib }:
+{ lib, pkgs }:
 
 let
   ps = pkgs.python3Packages;
