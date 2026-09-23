@@ -1,3 +1,8 @@
-{ pkgs, inputs, ... }:
+{ inputs, pkgs, ... }:
 
-inputs.treefmt-nix.lib.mkWrapper pkgs ./treefmt.nix
+inputs.treefmt-nix.lib.mkWrapper pkgs {
+  imports = [
+    inputs.pedantix.treefmtModules.default
+    ./treefmt.nix
+  ];
+}

@@ -1,5 +1,7 @@
 {
   projectRootFile = "flake.nix";
-  programs.nixfmt.enable = true;
-  programs.statix.enable = true;
+  programs = {
+    pedantix.enable = true;
+    statix.enable = true;
+  };
 }
