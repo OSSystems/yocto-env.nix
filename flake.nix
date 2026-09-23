@@ -10,7 +10,6 @@
     # Swap to the next NixOS release branch once it ships a clean
     # libc. See doc/uninative-glibc-caps.md.
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-
     # Host Python for the build shell. Kept on a stable release branch,
     # separate from the unstable `nixpkgs` pin above, because unstable's
     # python311 package set currently fails to evaluate (gitpython and
@@ -20,19 +19,25 @@
     # Python interpreter's glibc is unrelated to the uninative caps issue
     # that dictates the unstable pin, so mixing is safe here.
     nixpkgs-python.url = "github:NixOS/nixpkgs/nixos-25.05";
-
-    red-tape.url = "github:phaer/red-tape";
-    red-tape.inputs.nixpkgs.follows = "nixpkgs";
-
-    treefmt-nix.url = "github:numtide/treefmt-nix";
-    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
+    red-tape = {
+      url = "github:phaer/red-tape";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    pedantix = {
+      url = "github:Swarsel/pedantix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs =
     { self, ... }@inputs:
     let
       base = inputs.red-tape.mkFlake {
-        inherit self inputs;
+        inherit inputs self;
         src = ./.;
         systems = [ "x86_64-linux" ];
       };
