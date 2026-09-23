@@ -1,7 +1,7 @@
 # Local oelint-parser package, tracking the latest upstream release so the
 # linter's parser can move ahead of the nixpkgs pin with a one-line bump here
 # instead of waiting on a channel roll.
-{ pkgs, lib }:
+{ lib, pkgs }:
 
 let
   ps = pkgs.python3Packages;

@@ -1,11 +1,11 @@
 # Local oelint-adv package wired to the in-tree oelint-parser, so recipe
 # linting tracks upstream releases without waiting on a nixpkgs bump. Bump the
 # `version`/`hash` here (and in oelint-parser.nix) to roll forward.
-{ pkgs, lib }:
+{ lib, pkgs }:
 
 let
   ps = pkgs.python3Packages;
-  oelint-parser = import ./oelint-parser.nix { inherit pkgs lib; };
+  oelint-parser = import ./oelint-parser.nix { inherit lib pkgs; };
   # Rebuild oelint-data against our parser too, otherwise the nixpkgs
   # oelint-data drags in its own oelint-parser and the closure ends up with
   # two versions (pythonCatchConflictsPhase fails).
