@@ -47,7 +47,7 @@
       # ("User chroot 'env' attributes are intended for interactive
       # nix-shell sessions, not for building!"). Swap the check for the
       # shell's `inputDerivation`, which builds every package the shell
-      # pulls in without invoking bubblewrap — enough to catch eval and
+      # pulls in without invoking bubblewrap, enough to catch eval and
       # closure regressions in `nix flake check`.
       checks = base.checks // {
         x86_64-linux = base.checks.x86_64-linux // {
