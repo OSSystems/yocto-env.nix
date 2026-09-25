@@ -75,25 +75,14 @@ whichever one your project uses:
   reads a JSON description of the layers and config snippets to use,
   clones them at pinned revisions, and creates a directory ready to
   build. Start with `bitbake-setup list` to see the available
-  configurations, then `bitbake-setup init` to instantiate one. This
-  flake packages it from the upstream PyPI release (2.19.0) — see
-  `packages/bitbake-setup.nix`.
-- **`kas`** — the established alternative (from nixpkgs). It reads a YAML
-  project description, clones the referenced layers at pinned revisions,
-  and drives bitbake: `kas build path/to/project.yml` (or `kas shell` to
-  drop into a configured build environment).
-- **`repo`** — Google's multi-repository tool (`git-repo` in nixpkgs, which
-  we co-maintain). Vendor BSPs that ship a manifest use it: `repo init -u
-  <manifest-url> -b <branch>` followed by `repo sync` lays out the tree.
+  configurations, then `bitbake-setup init` to instantiate one.
+- **`kas`** — the established alternative. It reads a YAML project
+  description, clones the referenced layers at pinned revisions, and
+  drives bitbake: `kas build path/to/project.yml` (or `kas shell` to drop
+  into a configured build environment).
+- **`repo`** — Google's multi-repository tool. Vendor BSPs that ship a
+  manifest use it: `repo init -u <manifest-url> -b <branch>` followed by
+  `repo sync` lays out the tree.
 
 `oelint-adv`, an advanced bitbake-recipe linter, is also on `PATH` for
 checking recipe style and common mistakes: `oelint-adv path/to/recipe.bb`.
-
-## Repository layout
-
-- `flake.nix` — minimal entry point; uses [phaer/red-tape](https://github.com/phaer/red-tape).
-- `lib/default.nix` — exports `mkYoctoEnv`, the dev-shell builder.
-- `devshells/default.nix` — the single devshell.
-- `packages/bitbake-setup.nix` — the `bitbake-setup` package (auto-exported by red-tape).
-- `doc/uninative-glibc-caps.md` — supported set, refresh script, and tag-on-roll strategy.
-- `treefmt.nix` + `formatter.nix` — formatter wiring (`nix fmt`).
