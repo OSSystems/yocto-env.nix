@@ -11,11 +11,8 @@
 
       selfPkgs = flake.packages.${system};
 
-      # Stable-branch nixpkgs used only for the host Python (see the
-      # `nixpkgs-python` input in flake.nix for the rationale).
       pkgsPython = flake.inputs.nixpkgs-python.legacyPackages.${system};
 
-      # Extra tools layered on top of the base host toolchain.
       extraTools = [
         selfPkgs.bitbake-setup
         pkgs.gitRepo
@@ -24,9 +21,6 @@
         selfPkgs.oelint-adv
       ];
 
-      # python3 plus the modules the Yocto build host requires
-      # (system-requirements.html: python3-{git,jinja2,pexpect,pip,subunit,websockets}).
-      #
       # python311, not the default python3 (3.13): it is the newest CPython
       # still shipping stdlib `distutils`, which kirkstone's sanity check
       # imports (removed in 3.12, PEP 632). Clears the >=3.9 host minimum of
@@ -241,12 +235,11 @@
         multiPkgs = null;
         extraOutputsToInstall = [ "dev" ];
 
-        # Overlay writable copies (see `basePasswd`), then expose the host's
-        # msmtp config. `git send-email` with no `sendemail.smtp*` config
-        # defaults to the first `sendmail` on PATH; on NixOS that is a msmtp
-        # wrapper (`/run/wrappers/bin/sendmail`), which reads `/etc/msmtprc`.
-        # The FHS `/etc` shadows the host's, so without this msmtp fails with
-        # "no configuration file available". `/.host-etc` is the host `/etc`
+        # `git send-email` with no `sendemail.smtp*` config defaults to the
+        # first `sendmail` on PATH; on NixOS that is a msmtp wrapper
+        # (`/run/wrappers/bin/sendmail`), which reads `/etc/msmtprc`. The FHS
+        # `/etc` shadows the host's, so without this msmtp fails with "no
+        # configuration file available". `/.host-etc` is the host `/etc`
         # the FHS bubblewrap binds in; a dangling link (host without msmtp) is
         # harmless — msmtp just falls back to its other config locations.
         extraBwrapArgs =
@@ -355,7 +348,6 @@
 
             export BB_ENV_PASSTHROUGH_ADDITIONS="${passthroughList}"
 
-            # `--postread` equivalent for bitbake.
             export BBPOSTCONF="${nixconf}"
 
             export KAS_NIXVARS_CONFIG="${kasFragment}"

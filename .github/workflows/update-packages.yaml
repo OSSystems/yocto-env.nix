@@ -16,7 +16,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # oelint-adv pins the in-tree oelint-parser, so the two roll together.
           - name: oelint
             attrs: oelint-parser oelint-adv
             summary: the `oelint-adv` and `oelint-parser` packages
@@ -51,8 +50,6 @@ jobs:
 
           base=$(git rev-parse HEAD)
 
-          # `--commit` writes one commit per package, with the nixpkgs-standard
-          # `attr: old -> new` subject. It is a no-op when the package is current.
           for attr in ${{ matrix.attrs }}; do
             nix run nixpkgs#nix-update -- --flake --version=stable ${{ matrix.extra }} --commit "$attr"
           done

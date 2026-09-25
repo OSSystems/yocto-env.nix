@@ -1,6 +1,3 @@
-# Local oelint-adv package wired to the in-tree oelint-parser, so recipe
-# linting tracks upstream releases without waiting on a nixpkgs bump. Bump the
-# `version`/`hash` here (and in oelint-parser.nix) to roll forward.
 { lib, pkgs }:
 
 let
@@ -52,10 +49,7 @@ ps.buildPythonApplication (finalAttrs: {
     pytestCheckHook
   ];
 
-  disabledTests = [
-    # requires network access
-    "TestClassOelintVarsHomepagePing"
-  ];
+  disabledTests = [ "TestClassOelintVarsHomepagePing" ];
 
   pythonRelaxDeps = [
     "argcomplete"
