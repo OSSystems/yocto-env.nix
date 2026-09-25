@@ -48,17 +48,21 @@ tarballs. Numbers below captured **2026-05-16**.
 | `wrynose`    | 6.0   | 2.43                      | 5.1               |
 | `master`     | —     | 2.43                      | 5.1               |
 
-## Why `nixos-unstable`
+## Why `nixos-26.05`
 
-Every tagged nixpkgs branch up through `nixos-25.11` ships a
+Every nixpkgs release branch up through `nixos-25.11` ships a
 `libc.so.6` with an undefined reference to
 `__nptl_change_stack_perm@GLIBC_PRIVATE`. The uninative tarball from
 kirkstone onwards (4.7+) bundles an `ld-linux-x86-64.so.2` that no
 longer exports the symbol, so loading any conftest aborts with a
 symbol-lookup error and autoconf reports "cannot run C compiled
-programs". `nixos-unstable` (glibc 2.42) is the first nixpkgs build to
-drop the reference and stays under master's cap of 2.43. Move to the
-next NixOS release branch once it ships with the same glibc.
+programs". `nixos-26.05` (glibc 2.42) is the first release branch to
+drop the reference and stays under master's cap of 2.43.
+
+The shell uses `gcc14` rather than 26.05's default GCC 15: kirkstone's
+newest supported host distribution (Fedora 41) ships GCC 14, and its
+native recipes only carry host-compiler fixes up to that release. Drop
+the override once kirkstone leaves the supported set.
 
 ## Refresh script
 
@@ -75,7 +79,7 @@ done
 
 # Current nixpkgs glibc:
 curl -sSL \
-  "https://raw.githubusercontent.com/NixOS/nixpkgs/nixos-unstable/pkgs/development/libraries/glibc/common.nix" \
+  "https://raw.githubusercontent.com/NixOS/nixpkgs/nixos-26.05/pkgs/development/libraries/glibc/common.nix" \
   | grep -oE 'version = "[0-9.]+' | head -1
 ```
 

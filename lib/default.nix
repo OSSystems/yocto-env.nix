@@ -50,7 +50,12 @@
 
       histFile = "~/.history-yocto-env";
 
-      ccSalt = pkgs.stdenv.cc.suffixSalt;
+      # GCC 14, not the default (15): kirkstone's newest supported host
+      # (Fedora 41) ships GCC 14, and its native recipes only carry
+      # host-compiler fixes up to that release.
+      cc = pkgs.gcc14;
+
+      ccSalt = cc.suffixSalt;
 
       # The FHS-generated `/etc/profile` sets
       # `LOCALE_ARCHIVE=/usr/lib/locale/locale-archive`; we symlink that
@@ -205,7 +210,7 @@
             diffstat
             expect
             file
-            gcc
+            cc
             gdb
             git
             git-lfs
@@ -279,7 +284,7 @@
           # nixpkgs' gcc wrapper omits the LTO shims (gcc-ar/gcc-nm/gcc-ranlib)
           # that LTO-enabled recipes need; take them from the unwrapped gcc.
           for t in gcc-ar gcc-nm gcc-ranlib; do
-            ln -s ${pkgs.stdenv.cc.cc}/bin/$t $out/usr/bin/$t
+            ln -s ${cc.cc}/bin/$t $out/usr/bin/$t
           done
 
           # Suppress the FHS env's `/etc/X -> /.host-etc/X` symlinks by

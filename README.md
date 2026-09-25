@@ -14,7 +14,7 @@ supported Yocto release. Today that's:
 | `kirkstone` | 4.0   | 25 April 2022    | LTS — ended April 2026       |
 
 All four share the same `UNINATIVE_MAXGLIBCVERSION` regime, so one
-`nixpkgs` pin (currently `nixos-unstable`, glibc 2.42) keeps the FHS
+`nixpkgs` pin (currently `nixos-26.05`, glibc 2.42) keeps the FHS
 `/lib/ld-linux-x86-64.so.2` compatible with each release's uninative
 tarball. See [doc/uninative-glibc-caps.md](doc/uninative-glibc-caps.md)
 for the full rationale.
