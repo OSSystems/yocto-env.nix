@@ -1,6 +1,3 @@
-# Local oelint-parser package, tracking the latest upstream release so the
-# linter's parser can move ahead of the nixpkgs pin with a one-line bump here
-# instead of waiting on a channel roll.
 { lib, pkgs }:
 
 let
@@ -18,7 +15,6 @@ ps.buildPythonPackage (finalAttrs: {
     hash = "sha256-wQxOcdowzo8pDRH0iT851ZRYehDUqsCI2W6f2eQQbFA=";
   };
 
-  # Upstream pins `regex == <exact>`; relax it onto whatever nixpkgs ships.
   pythonRelaxDeps = [ "regex" ];
 
   build-system = [ ps.setuptools ];
