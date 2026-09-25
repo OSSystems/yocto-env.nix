@@ -1,5 +1,5 @@
 # kas patched to inherit the dev-shell's Nix cc-wrapper environment, which kas
-# otherwise strips (context.py:setup_initial_environ) — leaving native binaries
+# otherwise strips (context.py:setup_initial_environ), leaving native binaries
 # with a /nix/store glibc rpath that mismatches uninative's ld.so and aborts
 # ("stack smashing detected"). 0001 lets the shell inject a fragment named by
 # $KAS_NIXVARS_CONFIG that restores it; 0002 exempts that injected fragment from

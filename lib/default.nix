@@ -151,10 +151,10 @@
 
           source ${pkgs.grml-zsh-config}/etc/zsh/zshrc
 
-          # Current grml zshrc ignores `$PROMPT` assignments — use zstyle:
+          # Current grml zshrc ignores `$PROMPT` assignments; use zstyle:
           # https://unix.stackexchange.com/questions/656152/why-does-setting-prompt-have-no-effect-in-grmls-zshrc
 
-          # Disable the right-side sad-smiley for non-zero exit codes —
+          # Disable the right-side sad-smiley for non-zero exit codes:
           # it makes copy-pasting terminal output painful.
           # https://bts.grml.org/grml/issue2267
           zstyle ':prompt:grml:right:setup' items
@@ -241,7 +241,7 @@
         # `/etc` shadows the host's, so without this msmtp fails with "no
         # configuration file available". `/.host-etc` is the host `/etc`
         # the FHS bubblewrap binds in; a dangling link (host without msmtp) is
-        # harmless — msmtp just falls back to its other config locations.
+        # harmless; msmtp just falls back to its other config locations.
         extraBwrapArgs =
           (lib.concatMap (name: [
             "--bind"
@@ -281,7 +281,7 @@
           done
 
           # Suppress the FHS env's `/etc/X -> /.host-etc/X` symlinks by
-          # giving its rootfs an entry at /etc/X — its etc-walk then
+          # giving its rootfs an entry at /etc/X; its etc-walk then
           # --ro-binds these placeholders and skips the symlink branch.
           mkdir -p $out/etc
           ${lib.concatMapStringsSep "\n" (name: ": > $out/etc/${name}") etcRwNames}
@@ -292,7 +292,7 @@
               # Suppress nixpkgs gcc-wrapper's auto-injected `-rpath
               # <nix-store glibc>`. With it, binaries that recipes link
               # against uninative's `ld-linux-x86-64.so.2` would load
-              # libc from the gcc-wrapper's pinned glibc instead — ABI
+              # libc from the gcc-wrapper's pinned glibc instead: ABI
               # mismatch, SIGSEGV at first jump. The wrapper's opt-out is
               # salt-suffixed; the unsalted `NIX_DONT_SET_RPATH` is
               # silently ignored.

@@ -46,7 +46,7 @@ tarballs. Numbers below captured **2026-05-16**.
 | `kirkstone`  | 4.0   | 2.41                      | 4.7               |
 | `scarthgap`  | 5.0   | 2.43                      | 5.1               |
 | `wrynose`    | 6.0   | 2.43                      | 5.1               |
-| `master`     | —     | 2.43                      | 5.1               |
+| `master`     | -     | 2.43                      | 5.1               |
 
 ## Why `nixos-26.05`
 
