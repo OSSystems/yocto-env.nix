@@ -21,7 +21,7 @@ A **single devshell** (`devShells.${system}.default`) serves every
 currently supported Yocto release. Today that's kirkstone (4.0 LTS),
 scarthgap (5.0 LTS), wrynose (6.0 LTS), and the moving master branch.
 All four happen to share the same uninative cap regime, so one
-`pkgsForInteractiveShell` pin covers them all.
+`nixpkgs` pin covers them all.
 
 When the cap regime changes (e.g. master bumps to require a glibc the
 current pin can no longer satisfy, or a new release branches off with a
