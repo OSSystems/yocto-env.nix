@@ -7,7 +7,7 @@ on:
       - master
   workflow_dispatch:
 concurrency:
-  group: ${{ github.repository }}-${{ github.workflow }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: false
 jobs:
   nix-fmt:
