@@ -352,6 +352,12 @@
       shellHook = ''
         YOCTO_ENV_ETC_RW="''${XDG_RUNTIME_DIR:-/tmp}/yocto-env-etc.$UID"
         install -d -m 700 "$YOCTO_ENV_ETC_RW"
+        # The /tmp fallback is predictable, and `install -d` accepts a
+        # directory another user created there first.
+        if [ -L "$YOCTO_ENV_ETC_RW" ] || [ ! -O "$YOCTO_ENV_ETC_RW" ]; then
+          echo "yocto-env: $YOCTO_ENV_ETC_RW is not a directory owned by you" >&2
+          exit 1
+        fi
         ${lib.concatMapStringsSep "\n" (
           name: ''install -m 644 ${etcRwFiles.${name}} "$YOCTO_ENV_ETC_RW/${name}"''
         ) etcRwNames}
