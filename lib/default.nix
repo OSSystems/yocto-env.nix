@@ -51,13 +51,6 @@
 
       ccSalt = cc.suffixSalt;
 
-      # The FHS-generated `/etc/profile` sets
-      # `LOCALE_ARCHIVE=/usr/lib/locale/locale-archive`; we symlink that
-      # path to a full glibcLocales archive compatible with the FHS's
-      # glibc. Consumers must also whitelist `LOCALE_ARCHIVE` for
-      # bitbake (e.g. via `BB_ENV_PASSTHROUGH_ADDITIONS` or the BSP's
-      # variable whitelist) or bitbake will strip it from `os.environ`
-      # before forking subprocesses.
       localeArchive = "${pkgs.glibcLocales}/lib/locale/locale-archive";
 
       # OE-core's base-passwd ships these standard accounts/groups. On NixOS,
@@ -288,7 +281,12 @@
         '';
         profile =
           let
-            setVars = {
+            # Fixed values rather than the FHS profile's, which keep or
+            # append to the outer environment's: the `nix develop` stdenv's
+            # `-rpath $PWD/outputs/out/lib` and `-frandom-seed` would be
+            # baked into every native binary, and a NixOS host's
+            # LOCALE_ARCHIVE would replace the FHS's.
+            fixedVars = {
               # Suppress nixpkgs gcc-wrapper's auto-injected `-rpath
               # <nix-store glibc>`. With it, binaries that recipes link
               # against uninative's `ld-linux-x86-64.so.2` would load
@@ -297,38 +295,35 @@
               # salt-suffixed; the unsalted `NIX_DONT_SET_RPATH` is
               # silently ignored.
               "NIX_DONT_SET_RPATH_${ccSalt}" = "1";
+              "NIX_CC_WRAPPER_TARGET_HOST_${ccSalt}" = "1";
+              NIX_CFLAGS_COMPILE = "-idirafter /usr/include";
+              NIX_CFLAGS_LINK = "-L/usr/lib -L/usr/lib32";
+              NIX_LDFLAGS = "-L/usr/lib -L/usr/lib32";
+              # gcc-wrapper bakes its own dynamic-loader path into produced
+              # binaries, bypassing the FHS ld.so.conf.
+              "NIX_DYNAMIC_LINKER_${ccSalt}" = "/lib/ld-linux-x86-64.so.2";
+              LOCALE_ARCHIVE = "/usr/lib/locale/locale-archive";
             };
-
-            exportVars = [
-              "NIX_CC_WRAPPER_TARGET_HOST_${ccSalt}"
-              "NIX_CFLAGS_COMPILE"
-              "NIX_CFLAGS_LINK"
-              "NIX_LDFLAGS"
-              "NIX_DYNAMIC_LINKER_${ccSalt}"
-            ];
 
             # BitBake's conf parser wants whitespace on both sides of `=`,
             # otherwise it warns: "lack of whitespace around the assignment".
-            exports =
-              (lib.mapAttrsToList (n: v: ''export ${n} = "${v}"'') setVars)
-              ++ (map (v: "export ${v}") exportVars);
+            exports = lib.mapAttrsToList (n: v: ''export ${n} = "${v}"'') fixedVars;
 
-            passthroughVars = (builtins.attrNames setVars) ++ exportVars;
-            passthroughList = lib.concatStringsSep " " passthroughVars;
+            ignoreList = lib.concatStringsSep " " (builtins.attrNames fixedVars);
 
             nixconf = pkgs.writeText "nixvars.conf" ''
               ${lib.concatStringsSep "\n" exports}
 
-              BB_BASEHASH_IGNORE_VARS += "${passthroughList}"
+              BB_BASEHASH_IGNORE_VARS += "${ignoreList}"
             '';
 
             # :append (not += like nixconf): local.conf is parsed before
             # bitbake.conf sets the BB_BASEHASH_IGNORE_VARS default.
             kasFragment = (pkgs.formats.yaml { }).generate "yocto-env-nixvars.yml" {
               header.version = 1;
-              env = setVars // lib.genAttrs exportVars (_: null);
+              env = fixedVars;
               local_conf_header.nixvars = lib.concatStringsSep "\n" (
-                exports ++ [ ''BB_BASEHASH_IGNORE_VARS:append = " ${passthroughList}"'' ]
+                exports ++ [ ''BB_BASEHASH_IGNORE_VARS:append = " ${ignoreList}"'' ]
               );
             };
           in
@@ -340,13 +335,9 @@
 
             unset TMPDIR
 
-            # gcc-wrapper bakes its own dynamic-loader path into produced
-            # binaries, bypassing the FHS ld.so.conf. Point it at the FHS
-            # loader so executables built inside the shell load
-            # `/lib/ld-linux-x86-64.so.2`.
-            export NIX_DYNAMIC_LINKER_${ccSalt}="/lib/ld-linux-x86-64.so.2"
-
-            export BB_ENV_PASSTHROUGH_ADDITIONS="${passthroughList}"
+            ${lib.concatStringsSep "\n" (
+              lib.mapAttrsToList (n: v: "export ${n}=${lib.escapeShellArg v}") fixedVars
+            )}
 
             export BBPOSTCONF="${nixconf}"
 
