@@ -18,15 +18,15 @@ reports) to a nixpkgs release whose glibc is at or below the cap.
 ## Strategy
 
 A **single devshell** (`devShells.${system}.default`) serves every
-currently supported Yocto release. Today that's kirkstone (4.0 LTS),
-scarthgap (5.0 LTS), wrynose (6.0 LTS), and the moving master branch.
-All four happen to share the same uninative cap regime, so one
-`nixpkgs` pin covers them all.
+currently supported Yocto release. Today that's scarthgap (5.0 LTS),
+wrynose (6.0 LTS), and the moving master branch. All three have caps at
+or above the pinned glibc, so one `nixpkgs` pin covers them all.
 
 When the cap regime changes (e.g. master bumps to require a glibc the
 current pin can no longer satisfy, or a new release branches off with a
-lower cap), we **tag the current commit and roll `nixpkgs` forward** in
-a new commit. Consumers needing the older shell check out the tag.
+lower cap), we **keep the current commit on a branch named after the
+release losing support and roll `nixpkgs` forward** in a new commit.
+Consumers needing the older shell use that branch (e.g. `kirkstone`).
 This is simpler than maintaining N parallel shells, given that the cap
 regimes have only ever changed across multi-year windows.
 
@@ -39,36 +39,35 @@ https://raw.githubusercontent.com/openembedded/openembedded-core/<branch>/meta/c
 ```
 
 These values change over time as a branch backports newer uninative
-tarballs. Numbers below captured **2026-05-16**.
+tarballs. Numbers below captured **2026-09-28**.
 
 | Codename     | Yocto | UNINATIVE_MAXGLIBCVERSION | uninative tarball |
 |--------------|-------|---------------------------|-------------------|
-| `kirkstone`  | 4.0   | 2.41                      | 4.7               |
 | `scarthgap`  | 5.0   | 2.43                      | 5.1               |
 | `wrynose`    | 6.0   | 2.43                      | 5.1               |
-| `master`     | -     | 2.43                      | 5.1               |
+| `master`     | -     | 2.44                      | 5.2               |
 
 ## Why `nixos-26.05`
 
 Every nixpkgs release branch up through `nixos-25.11` ships a
 `libc.so.6` with an undefined reference to
 `__nptl_change_stack_perm@GLIBC_PRIVATE`. The uninative tarball from
-kirkstone onwards (4.7+) bundles an `ld-linux-x86-64.so.2` that no
-longer exports the symbol, so loading any conftest aborts with a
+4.7 onwards bundles an `ld-linux-x86-64.so.2` that no longer exports
+the symbol, so loading any conftest aborts with a
 symbol-lookup error and autoconf reports "cannot run C compiled
 programs". `nixos-26.05` (glibc 2.42) is the first release branch to
-drop the reference and stays under master's cap of 2.43.
+drop the reference and stays under the lowest supported cap (2.43).
 
-The shell uses `gcc14` rather than 26.05's default GCC 15: kirkstone's
-newest supported host distribution (Fedora 41) ships GCC 14, and its
+The shell uses `gcc14` rather than 26.05's default GCC 15: scarthgap's
+newest tested host distribution (Fedora 41) ships GCC 14, and its
 native recipes only carry host-compiler fixes up to that release. Drop
-the override once kirkstone leaves the supported set.
+the override once scarthgap leaves the supported set.
 
 ## Refresh script
 
 ```sh
 # Caps per supported Yocto branch:
-for b in kirkstone scarthgap wrynose master; do
+for b in scarthgap wrynose master; do
   printf '%-12s ' "$b"
   curl -sSL \
     "https://raw.githubusercontent.com/openembedded/openembedded-core/${b}/meta/conf/distro/include/yocto-uninative.inc" \

@@ -11,8 +11,6 @@
 
       selfPkgs = flake.packages.${system};
 
-      pkgsPython = flake.inputs.nixpkgs-python.legacyPackages.${system};
-
       extraTools = [
         selfPkgs.bitbake-setup
         pkgs.gitRepo
@@ -21,11 +19,7 @@
         selfPkgs.oelint-adv
       ];
 
-      # python311, not the default python3 (3.13): it is the newest CPython
-      # still shipping stdlib `distutils`, which kirkstone's sanity check
-      # imports (removed in 3.12, PEP 632). Clears the >=3.9 host minimum of
-      # scarthgap onwards, so one Python serves every supported release.
-      pythonEnv = pkgsPython.python311.withPackages (
+      pythonEnv = pkgs.python3.withPackages (
         ps: with ps; [
           gitpython
           jinja2
@@ -44,7 +38,7 @@
 
       histFile = "~/.history-yocto-env";
 
-      # GCC 14, not the default (15): kirkstone's newest supported host
+      # GCC 14, not the default (15): scarthgap's newest tested host
       # (Fedora 41) ships GCC 14, and its native recipes only carry
       # host-compiler fixes up to that release.
       cc = pkgs.gcc14;
@@ -261,10 +255,9 @@
           mkdir -p $out/usr/lib64/locale
           ln -sf ${localeArchive} $out/usr/lib64/locale/locale-archive
 
-          # Pre-kirkstone-and-friends BSP layers (meta-freescale, older
-          # OE-core sanity checks) list `lz4c` in HOSTTOOLS. Debian/Ubuntu
-          # ship it as a symlink to `lz4`; nixpkgs doesn't, so bitbake
-          # fails its host-tool sanity check. Provide the same symlink.
+          # scarthgap lists `lz4c` in HOSTTOOLS. Debian/Ubuntu ship it as a
+          # symlink to `lz4`; nixpkgs doesn't, so bitbake fails its host-tool
+          # sanity check.
           ln -s lz4 $out/usr/bin/lz4c
 
           # nixpkgs' gcc wrapper omits the LTO shims (gcc-ar/gcc-nm/gcc-ranlib)
