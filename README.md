@@ -56,11 +56,12 @@ require), `gdb`, `git`, `git-lfs`, `gnumake`, `chrpath`, `cpio`,
 compression/archive utilities and a Yocto-aware set of fetcher and
 testimage helpers.
 
-The shell also wires the Nix toolchain into bitbake's hash-based
-caching: it exports `BB_ENV_PASSTHROUGH_ADDITIONS` with the
-`NIX_*`/dynamic-linker variables bitbake needs to forward to its
-subprocesses, and sets `BBPOSTCONF` to a generated conf snippet so
-those variables survive `BB_BASEHASH_IGNORE_VARS`.
+The shell also wires the Nix toolchain into bitbake: it sets
+`BBPOSTCONF` (and, for kas, `KAS_NIXVARS_CONFIG`) to a generated conf
+snippet that exports fixed values for the `NIX_*` compiler-wrapper
+variables and `LOCALE_ARCHIVE` to every task and lists them in
+`BB_BASEHASH_IGNORE_VARS`, so they don't change task hashes or sstate
+reuse.
 
 A configured `zsh` (grml + fzf + eza) is launched as the interactive
 shell, with history persisted to `~/.history-yocto-env`.
