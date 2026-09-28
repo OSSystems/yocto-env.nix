@@ -51,13 +51,13 @@ jobs:
           base=$(git rev-parse HEAD)
 
           for attr in ${{ matrix.attrs }}; do
+            before=$(git rev-parse HEAD)
             nix run nixpkgs#nix-update -- --flake --version=stable ${{ matrix.extra }} --commit "$attr"
+            if [ "$(git rev-parse HEAD)" != "$before" ]; then
+              nix fmt
+              git diff --quiet || git commit --all --amend --no-edit
+            fi
           done
-
-          if [ "$(git rev-parse HEAD)" != "$base" ]; then
-            nix fmt
-            git diff --quiet || git commit --all --amend --no-edit
-          fi
 
           subjects=$(git log --reverse --format=%s "$base..HEAD")
           title=${subjects//$'\n'/, }
