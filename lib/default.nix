@@ -23,6 +23,7 @@
         ps: with ps; [
           gitpython
           jinja2
+          packaging
           pexpect
           pip
           subunit
