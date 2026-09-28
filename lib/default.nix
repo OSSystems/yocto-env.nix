@@ -146,7 +146,6 @@
           # https://bts.grml.org/grml/issue2267
           zstyle ':prompt:grml:right:setup' items
 
-          # http://bewatermyfriend.org/p/2013/003/
           nix_shell_prompt() {
               REPLY=''${IN_NIX_SHELL+"(yocto-env) "}
           }
@@ -154,8 +153,6 @@
 
           zstyle ':prompt:grml:left:setup' items rc change-root user at host path vcs \
                                            nix-shell-indicator percent
-
-
 
           alias l='${pkgs.eza}/bin/eza -l'
           alias ls='${pkgs.eza}/bin/eza'
