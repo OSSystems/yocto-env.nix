@@ -11,21 +11,19 @@ supported Yocto release. Today that's:
 | (master)    | -     | rolling          | tracks current dev           |
 | `wrynose`   | 6.0   | 14 May 2026      | **LTS**, until April 2030    |
 | `scarthgap` | 5.0   | 29 April 2024    | **LTS**, until April 2028    |
-| `kirkstone` | 4.0   | 25 April 2022    | LTS, ended April 2026        |
 
-All four share the same `UNINATIVE_MAXGLIBCVERSION` regime, so one
+All three have a `UNINATIVE_MAXGLIBCVERSION` of at least 2.43, so one
 `nixpkgs` pin (currently `nixos-26.05`, glibc 2.42) keeps the FHS
 `/lib/ld-linux-x86-64.so.2` compatible with each release's uninative
 tarball. See [doc/uninative-glibc-caps.md](doc/uninative-glibc-caps.md)
 for the full rationale.
 
-When the cap regime shifts (a new release branches with a lower cap, or
-master bumps past what the current pin can satisfy), the flake's
-`nixpkgs` input is rolled forward in a new commit and the previous
-commit is tagged. Consumers needing the older shell check out the tag.
-We deliberately do not carry parallel per-codename shells; the historical
-overhead never paid off given that cap regimes change on a multi-year
-cadence.
+When a release loses support here (it reaches end of life, or the cap
+regime shifts so the current pin can no longer satisfy it), the commit
+before the change is kept on a branch named after that release, and the
+change lands in a new commit on `master`. We deliberately do not carry
+parallel per-codename shells on `master`; the historical overhead never
+paid off given that cap regimes change on a multi-year cadence.
 
 ## Quick start
 
@@ -38,11 +36,11 @@ nix develop github:OSSystems/yocto-env.nix
 If you have the repo checked out locally, `nix develop` works the same
 way against the working tree.
 
-For an older Yocto release whose uninative cap predates the current
-`nixpkgs` pin, check out the tag captured before the most recent roll:
+For a Yocto release no longer supported here, use the branch named
+after it. Today that's `kirkstone` (4.0):
 
 ```sh
-nix develop github:OSSystems/yocto-env.nix/<tag>
+nix develop github:OSSystems/yocto-env.nix/kirkstone
 ```
 
 ## What the shell provides

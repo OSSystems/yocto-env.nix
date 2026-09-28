@@ -1,8 +1,8 @@
 # Working on the dev-shell
 
 One dev-shell serves all supported releases; a uninative cap change is handled by rolling the
-`nixpkgs` input and tagging the prior commit, as described in
-[uninative-glibc-caps.md](uninative-glibc-caps.md).
+`nixpkgs` input and keeping the prior commit on a branch named after the release losing support,
+as described in [uninative-glibc-caps.md](uninative-glibc-caps.md).
 
 - The `.env` is interactive-only: `nix build .#devShells.<sys>.default` fails at
   the `.env` step (so `result` can be stale), and `nix develop --command` / piped
