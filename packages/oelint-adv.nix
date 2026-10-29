@@ -10,14 +10,14 @@ let
 in
 ps.buildPythonApplication (finalAttrs: {
   pname = "oelint-adv";
-  version = "9.11.2";
+  version = "9.11.3";
   pyproject = true;
 
   src = pkgs.fetchFromGitHub {
     owner = "priv-kweihmann";
     repo = "oelint-adv";
     tag = finalAttrs.version;
-    hash = "sha256-iV/AOn8qy9e5z5PLbeZeeMfipKJ3ezOv61SXBT0iLeI=";
+    hash = "sha256-zVsyy2w1flnIhDIyWIZx8jEc3b4M9ykleTmXqL7io3U=";
   };
 
   postPatch = ''
