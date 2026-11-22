@@ -54,7 +54,7 @@ jobs:
             before=$(git rev-parse HEAD)
             # nix-update before 1.17.0 fails on Nix 2.35, whose `nix flake
             # metadata` no longer copies a dirty tree into the store.
-            nix run github:Mic92/nix-update/v1.17.0 ----flake --version=stable ${{ matrix.extra }} --commit "$attr"
+            nix run github:Mic92/nix-update/v1.17.0 -- --flake --version=stable ${{ matrix.extra }} --commit "$attr"
             if [ "$(git rev-parse HEAD)" != "$before" ]; then
               nix fmt
               git diff --quiet || git commit --all --amend --no-edit
