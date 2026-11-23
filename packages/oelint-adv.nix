@@ -3,10 +3,7 @@
 let
   ps = pkgs.python3Packages;
   oelint-parser = import ./oelint-parser.nix { inherit lib pkgs; };
-  # Rebuild oelint-data against our parser too, otherwise the nixpkgs
-  # oelint-data drags in its own oelint-parser and the closure ends up with
-  # two versions (pythonCatchConflictsPhase fails).
-  oelint-data = ps.oelint-data.override { inherit oelint-parser; };
+  oelint-data = import ./oelint-data.nix { inherit lib pkgs; };
 in
 ps.buildPythonApplication (finalAttrs: {
   pname = "oelint-adv";
