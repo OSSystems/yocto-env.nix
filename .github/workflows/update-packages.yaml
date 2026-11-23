@@ -17,8 +17,8 @@ jobs:
       matrix:
         include:
           - name: oelint
-            attrs: oelint-parser oelint-adv
-            summary: the `oelint-adv` and `oelint-parser` packages
+            attrs: oelint-parser oelint-data oelint-adv
+            summary: the `oelint-adv`, `oelint-data`, and `oelint-parser` packages
           # fetchPypi builds a files.pythonhosted.org URL for wheels, which
           # nix-update cannot map back to a project; name the project directly.
           - name: bitbake-setup
