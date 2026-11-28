@@ -6,14 +6,14 @@ let
 in
 ps.buildPythonPackage (finalAttrs: {
   pname = "oelint-data";
-  version = "1.6.1";
+  version = "1.6.2";
   pyproject = true;
 
   src = pkgs.fetchFromGitHub {
     owner = "priv-kweihmann";
     repo = "oelint-data";
     tag = finalAttrs.version;
-    hash = "sha256-JSZNxXlFCkD08ZPo2781ZL+VVzxAfpUBlh+vw/jKLe0=";
+    hash = "sha256-XetO9BS/UEwUu3mYD7m1GgVpxHQf2lF40kXdrBXB3YY=";
   };
 
   build-system = [ ps.setuptools ];

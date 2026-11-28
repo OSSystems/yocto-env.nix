@@ -7,14 +7,14 @@ let
 in
 ps.buildPythonApplication (finalAttrs: {
   pname = "oelint-adv";
-  version = "9.14.0";
+  version = "9.14.1";
   pyproject = true;
 
   src = pkgs.fetchFromGitHub {
     owner = "priv-kweihmann";
     repo = "oelint-adv";
     tag = finalAttrs.version;
-    hash = "sha256-5D0TAFXN6A/1xxnESW7c1qHi5QvQ9QZjJbPWuw+wwjQ=";
+    hash = "sha256-fwiQLyedgvht9GEDJRl5EHXhAE0yqI+TNfb0E05Mpgc=";
   };
 
   postPatch = ''
